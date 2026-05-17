@@ -1,0 +1,38 @@
+/**
+ * Cloud-provider macro regions (AWS / GCP geographic groupings).
+ * Stored as snake_case strings in PostgreSQL.
+ */
+export enum MacroRegion {
+  USA = "usa",
+  CANADA = "canada",
+  EUROPE = "europe",
+  UK = "uk",
+  WESTERN_EUROPE = "western_europe",
+  EASTERN_EUROPE = "eastern_europe",
+  NORDICS = "nordics",
+  BRAZIL = "brazil",
+  MEXICO = "mexico",
+  ARGENTINA = "argentina",
+  CHILE = "chile",
+  COLOMBIA = "colombia",
+  PERU = "peru",
+  SOUTH_AMERICA = "south_america",
+  CENTRAL_AMERICA = "central_america",
+  UAE = "uae",
+  MIDDLE_EAST = "middle_east",
+  ISRAEL = "israel",
+  AFRICA = "africa",
+  SOUTH_AFRICA = "south_africa",
+  RUSSIA = "russia",
+  INDIA = "india",
+  SOUTH_ASIA = "south_asia",
+  SOUTHEAST_ASIA = "southeast_asia",
+  EAST_ASIA = "east_asia",
+  ASIA_PACIFIC = "asia_pacific",
+  JAPAN = "japan",
+  SOUTH_KOREA = "south_korea",
+  INDONESIA = "indonesia",
+  AUSTRALIA = "australia",
+  OCEANIA = "oceania",
+  CHINA = "china",
+}
