@@ -19,7 +19,7 @@ export interface CreateShareInput {
   id?: string;
 }
 
-export interface MarkOpenedInput {
+export interface markOpenedByIdInput {
   passphase: string;
   openedAt?: Date;
 }
@@ -71,7 +71,7 @@ export class ShareService {
     return toShareStatus(share);
   }
 
-  async markOpened(id: string, input: MarkOpenedInput) {
+  async markOpenedById(id: string, input: markOpenedByIdInput) {
     const share = await this.findShareOrThrow(id);
     this.assertNotExpired(share);
 

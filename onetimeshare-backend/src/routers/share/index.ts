@@ -27,9 +27,9 @@ shareRouter.patch(
   "/:id/opened",
   validate({
     params: shareValidators.idParams,
-    body: shareValidators.markOpenedBody,
+    body: shareValidators.markOpenedByIdBody,
   }),
-  shareController.markOpened,
+  shareController.markOpenedById,
 );
 
 shareRouter.patch(

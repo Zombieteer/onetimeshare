@@ -23,9 +23,9 @@ export class ShareController {
     res.sendApiResponse(status);
   };
 
-  markOpened = async (req: Request, res: Response) => {
+  markOpenedById = async (req: Request, res: Response) => {
     const { passphase, openedAt } = req.body as { passphase: string; openedAt?: string };
-    const result = await shareService.markOpened(getIdParam(req), {
+    const result = await shareService.markOpenedById(getIdParam(req), {
       passphase,
       openedAt: openedAt ? moment(openedAt).toDate() : undefined,
     });

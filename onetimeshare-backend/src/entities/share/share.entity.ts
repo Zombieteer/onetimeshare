@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { randomUUID } from "node:crypto";
 import { MacroRegion } from "./macro-region.enum.js";
+import { env } from "../../config/env.js";
 
 @Entity("shares")
 export class Share extends BaseEntity {
@@ -70,6 +71,7 @@ export class Share extends BaseEntity {
       openedAt: this.openedAt,
       expiredAt: this.expiredAt,
       copiedAt: this.copiedAt,
+      url: `${env.domain}/secret/${this.id}`
     };
   }
 

@@ -27,14 +27,13 @@ export const shareValidators = {
       "number.min": "ttl must be at least 1 second",
       "number.max": "ttl cannot exceed 30 days",
     }),
-    id: Joi.string().uuid({ version: "uuidv4" }).optional(),
   }),
 
   idParams: Joi.object({
     id: idParam,
   }),
 
-  markOpenedBody: Joi.object({
+  markOpenedByIdBody: Joi.object({
     passphase: Joi.string().max(512).required(),
     openedAt: Joi.date().iso().optional(),
   }),
