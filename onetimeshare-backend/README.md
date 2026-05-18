@@ -86,7 +86,7 @@ yarn dev
 Check the health endpoint:
 
 ```bash
-curl http://localhost:3000/health
+curl http://localhost:8000/health
 ```
 
 Expected response:

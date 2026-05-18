@@ -12,7 +12,7 @@ const nodeEnv = process.env.NODE_ENV ?? "development";
 
 export const env = {
   nodeEnv,
-  port: Number(process.env.PORT) || 3000,
+  port: Number(process.env.PORT) || 8000,
   log: {
     level: process.env.LOG_LEVEL ?? (nodeEnv === "production" ? "info" : "debug"),
     format: (process.env.LOG_FORMAT ?? (nodeEnv === "production" ? "json" : "pretty")) as
