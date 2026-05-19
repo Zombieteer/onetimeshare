@@ -21,8 +21,8 @@ interface EncryptionKeyMeta {
   authTag: string;
 }
 
-function deriveKey(passphase: string, salt: Buffer): Buffer {
-  return scryptSync(passphase, salt, KEY_LENGTH);
+function deriveKey(passphrase: string, salt: Buffer): Buffer {
+  return scryptSync(passphrase, salt, KEY_LENGTH);
 }
 
 function assertEncryptionType(encryptionType: string): asserts encryptionType is EncryptionType {
@@ -36,13 +36,13 @@ function assertEncryptionType(encryptionType: string): asserts encryptionType is
 
 export function encryptSecret(
   plaintext: string,
-  passphase: string,
+  passphrase: string,
   encryptionType: EncryptionType = "aes-256-gcm",
 ): EncryptionPayload {
   assertEncryptionType(encryptionType);
 
   const salt = randomBytes(SALT_LENGTH);
-  const key = deriveKey(passphase, salt);
+  const key = deriveKey(passphrase, salt);
   const iv = randomBytes(IV_LENGTH);
   const cipher = createCipheriv(ALGORITHM, key, iv);
 
@@ -65,7 +65,7 @@ export function encryptSecret(
 export function decryptSecret(
   encryptedSecret: string,
   encryptionKey: string,
-  passphase: string,
+  passphrase: string,
   encryptionType: EncryptionType,
 ): string {
   assertEncryptionType(encryptionType);
@@ -84,7 +84,7 @@ export function decryptSecret(
   }
 
   try {
-    const key = deriveKey(passphase, Buffer.from(salt, "base64"));
+    const key = deriveKey(passphrase, Buffer.from(salt, "base64"));
     const decipher = createDecipheriv(ALGORITHM, key, Buffer.from(iv, "base64"));
     decipher.setAuthTag(Buffer.from(authTag, "base64"));
 
@@ -95,27 +95,27 @@ export function decryptSecret(
 
     return decrypted.toString("utf8");
   } catch {
-    throw new AppError(401, "Invalid passphase or corrupted secret");
+    throw new AppError(401, "Invalid passphrase or corrupted secret");
   }
 }
 
-export function hashPassphase(passphase: string): string {
+export function hashPassphrase(passphrase: string): string {
   const salt = randomBytes(SALT_LENGTH);
-  const hash = scryptSync(passphase, salt, KEY_LENGTH);
+  const hash = scryptSync(passphrase, salt, KEY_LENGTH);
   return `${salt.toString("base64")}:${hash.toString("base64")}`;
 }
 
-export function verifyPassphase(storedHash: string, providedPassphase: string): void {
+export function verifyPassphrase(storedHash: string, providedPassphrase: string): void {
   const [saltB64, hashB64] = storedHash.split(":");
 
   if (!saltB64 || !hashB64) {
-    throw new AppError(500, "Invalid passphase hash stored for share");
+    throw new AppError(500, "Invalid passphrase hash stored for share");
   }
 
-  const hash = scryptSync(providedPassphase, Buffer.from(saltB64, "base64"), KEY_LENGTH);
+  const hash = scryptSync(providedPassphrase, Buffer.from(saltB64, "base64"), KEY_LENGTH);
   const expected = Buffer.from(hashB64, "base64");
 
   if (hash.length !== expected.length || !timingSafeEqual(hash, expected)) {
-    throw new AppError(401, "Invalid passphase");
+    throw new AppError(401, "Invalid passphrase");
   }
 }

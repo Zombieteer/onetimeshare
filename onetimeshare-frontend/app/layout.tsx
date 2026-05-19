@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { QueryProvider } from "./components/QueryProvider";
 
 export const metadata: Metadata = {
-  title: "Onyx Crypt — Zero-knowledge secret sharing",
+  title: "Onyx Crypt — Privacy-first secret sharing",
   description:
-    "Generate a cryptographically secure link that destroys its content the instant it's read.",
+    "Generate a secure link that destroys its content the instant it's read.",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }

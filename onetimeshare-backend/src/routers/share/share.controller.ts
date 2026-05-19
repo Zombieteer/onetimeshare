@@ -18,15 +18,10 @@ export class ShareController {
     res.sendApiResponse(share);
   };
 
-  getStatus = async (req: Request, res: Response) => {
-    const status = await shareService.getStatus(getIdParam(req));
-    res.sendApiResponse(status);
-  };
-
   markOpenedById = async (req: Request, res: Response) => {
-    const { passphase, openedAt } = req.body as { passphase: string; openedAt?: string };
+    const { passphrase, openedAt } = req.body as { passphrase: string; openedAt?: string };
     const result = await shareService.markOpenedById(getIdParam(req), {
-      passphase,
+      passphrase,
       openedAt: openedAt ? moment(openedAt).toDate() : undefined,
     });
     res.sendApiResponse(result);

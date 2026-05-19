@@ -29,5 +29,6 @@ export const env = {
     ssl: process.env.DB_SSL === "true",
     logging: process.env.DB_LOGGING === "true",
   },
-  domain: process.env.DOMAIN
+  domain: process.env.DOMAIN,
+  corsOrigin: process.env.CORS_ORIGIN,
 };

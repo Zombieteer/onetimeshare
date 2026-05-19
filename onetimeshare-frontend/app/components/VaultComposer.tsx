@@ -2,6 +2,9 @@
 
 import { Clock, Eye, EyeOff, Lock } from "lucide-react";
 import { useCallback, useState } from "react";
+import { useCreateShare } from "@/lib/api/shares/useCreateShare";
+import { lifetimeToTtl } from "@/lib/api/shares/shares";
+import clsx from "clsx";
 
 type Lifetime = "burn" | "1h" | "4h" | "24h" | "7d";
 
@@ -18,37 +21,39 @@ export function VaultComposer() {
   const [secret, setSecret] = useState("");
   const [lifetime, setLifetime] = useState<Lifetime>("burn");
   const [passphrase, setPassphrase] = useState("");
-  const [sealing, setSealing] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const onSeal = useCallback(async () => {
+  const { mutate: createShare, isPending } = useCreateShare();
+
+  const onSeal = useCallback(() => {
     setError(null);
     if (!secret.trim()) {
       setError("Nothing to seal — Add a secret first.");
       return;
     }
-    setSealing(true);
-    // try {
-    //   const { ciphertext, iv, keyFragment } = await encryptSecret(secret);
-    //   const passphraseHash = passphrase
-    //     ? await hashPassphrase(passphrase)
-    //     : null;
-    //   const { id } = await create({
-    //     data: { ciphertext, iv, lifetime, passphraseHash },
-    //   });
-    //   const url = `${window.location.origin}/s/${id}#${keyFragment}`;
-    //   setShareUrl(url);
-    //   setSecret("");
-    //   setPassphrase("");
-    // } catch (e) {
-    //   console.error(e);
-    //   setError("Could not seal the secret. Try again.");
-    // } finally {
-    //   setSealing(false);
-    // }
-  }, [secret, lifetime, passphrase]);
+
+    createShare(
+      {
+        region: "usa",
+        secret,
+        passphrase,
+        ttl: lifetimeToTtl(lifetime),
+      },
+      {
+        onSuccess: (data) => {
+          const url = data.url;
+          setShareUrl(url);
+          setSecret("");
+          setPassphrase("");
+        },
+        onError: (err) => {
+          setError(err.message ?? "Could not seal the secret. Try again.");
+        },
+      }
+    );
+  }, [secret, lifetime, passphrase, createShare]);
 
   const reset = () => {
     setShareUrl(null);
@@ -76,7 +81,7 @@ export function VaultComposer() {
       setLifetime={setLifetime}
       passphrase={passphrase}
       setPassphrase={setPassphrase}
-      sealing={sealing}
+      sealing={isPending}
       onSeal={onSeal}
       error={error}
     />
@@ -115,7 +120,7 @@ function ComposerPanel(props: {
           <textarea
             value={props.secret}
             onChange={(e) => props.setSecret(e.target.value)}
-            placeholder="Enter your secret here..."
+            placeholder="Paste a password, secret message or private link here..."
             spellCheck={false}
             className="h-48 w-full resize-none border-none bg-transparent font-mono text-base text-foreground placeholder:text-steel/60 focus:outline-none focus:ring-0"
           />
@@ -202,7 +207,7 @@ function RevealPanel({
         <div className="scan-line absolute inset-0 pointer-events-none" />
         <div className="flex items-center justify-between border-b border-hairline px-6 py-3">
           <span className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-cyan">
-            <span className="size-1.5 animate-ember rounded-full bg-cyan shadow-[0_0_8px_var(--cyan)]" />
+            <span className="size-1.5 animate-ember rounded-full bg-green-500 shadow-[0_0_8px_var(--cyan)]" />
             Seal · Active
           </span>
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-steel">
@@ -212,7 +217,7 @@ function RevealPanel({
 
         <div className="p-6 md:p-8">
           <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.3em] text-steel">
-            Disposable link · contains decryption key in fragment
+            Share your secret link with others.
           </p>
           <div className="flex items-stretch border border-hairline bg-ink">
             <code className="flex-1 truncate px-4 py-3 font-mono text-sm text-foreground">
@@ -220,24 +225,27 @@ function RevealPanel({
             </code>
             <button
               onClick={copy}
-              className="border-l border-hairline bg-cyan/10 px-4 font-mono text-[10px] uppercase tracking-[0.25em] text-cyan transition-colors hover:bg-cyan/20"
+              className={clsx(
+                "border-l border-hairline px-4 font-mono text-[10px] uppercase tracking-[0.25em] transition-colors hover:bg-cyan/20",
+                copied ? "hover:bg-green-400 bg-green-300 text-black font-bold" : "bg-cyan/10 text-cyan"
+              )}
             >
               {copied ? "Copied" : "Copy"}
             </button>
           </div>
 
-          <p className="mt-6 max-w-prose text-sm leading-relaxed text-muted-foreground">
+          {/* <p className="mt-6 max-w-prose text-sm leading-relaxed text-muted-foreground">
             Share this link through a separate channel. Once it's opened, the
             ciphertext is overwritten on our servers and the only key — the
             fragment after the{" "}
             <code className="font-mono text-cyan">#</code> — never reached us.
-          </p>
+          </p> */}
 
           <button
             onClick={reset}
-            className="mt-8 border border-hairline px-4 py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-foreground transition-colors hover:border-cyan/60 hover:text-cyan"
+            className="mt-8 border border-cyan/40 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-foreground transition-colors hover:border-cyan/60 hover:text-cyan"
           >
-            Seal another
+            Seal another secret
           </button>
         </div>
       </div>

@@ -1,25 +1,24 @@
 import { VaultComposer } from "./components/VaultComposer";
 import { VaultShell } from "./components/VaultShell";
 
-// This is now a proper Server Component — no "use client", no hooks.
 // All metadata, static markup, and layout live here.
 // The interactive bits are delegated to <VaultComposer />.
 
 export const metadata = {
-  title: "Vault — Zero-knowledge secret sharing",
+  title: "Vault — Privacy-first secret sharing",
   description:
-    "Generate a cryptographically secure link that destroys its content the instant it's read.",
+    "Generate a secure link that destroys its content the instant it's read.",
 };
 
 export default function Home() {
   return (
     <VaultShell>
-      <section className="mx-auto max-w-4xl px-6 pb-12 pt-20 md:pt-20">
+      <section className="mx-auto max-w-4xl px-6 pb-12 pt-10">
         {/* Static hero — rendered on the server, zero JS cost */}
         <div className="mb-16 text-center animate-vault-rise">
           <div className="mb-5 inline-flex items-center gap-2 border border-hairline px-3 py-1 font-mono text-[10px] uppercase tracking-[0.3em] text-cyan/80">
             <span className="size-1 animate-ember rounded-full bg-cyan" />
-            Zero-knowledge protocol
+            Privacy-first architecture
           </div>
           <h1 className="text-balance text-4xl font-medium tracking-tight text-foreground md:text-6xl">
             Sensitive data,{" "}
@@ -56,7 +55,7 @@ function FeatureGrid() {
       n: "02",
       tag: "Ephemeral",
       title: "Absolute deletion",
-      body: "The first read atomically marks the secret consumed and wipes the ciphertext. There is no second chance to retrieve it.",
+      body: "The first read atomically marks the secret consumed and wipes the secret. There is no second chance to retrieve it.",
     },
     {
       n: "03",

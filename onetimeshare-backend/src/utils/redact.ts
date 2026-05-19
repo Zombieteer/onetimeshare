@@ -1,6 +1,6 @@
 const SENSITIVE_KEYS = new Set([
   "secret",
-  "passphase",
+  "passphrase",
   "passphrase",
   "password",
   "encryptedSecret",

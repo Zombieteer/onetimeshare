@@ -12,12 +12,6 @@ shareRouter.post(
 );
 
 shareRouter.get(
-  "/:id/status",
-  validate({ params: shareValidators.idParams }),
-  shareController.getStatus,
-);
-
-shareRouter.get(
   "/:id",
   validate({ params: shareValidators.idParams }),
   shareController.getById,

@@ -36,7 +36,7 @@ export class Share extends BaseEntity {
   ttl!: number;
 
   @Column({ type: "varchar", length: 512 })
-  passphase!: string;
+  passphrase!: string;
 
   @CreateDateColumn({ type: "timestamptz" })
   createdAt!: Date;

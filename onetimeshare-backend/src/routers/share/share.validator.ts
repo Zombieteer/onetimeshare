@@ -19,7 +19,7 @@ export const shareValidators = {
     secret: Joi.string().required().messages({
       "any.required": "secret is required",
     }),
-    passphase: Joi.string().max(512).required(),
+    passphrase: Joi.string().max(512).required().allow(''),
     encryptionType: Joi.string()
       .valid(...SUPPORTED_ENCRYPTION_TYPES)
       .default("aes-256-gcm"),
@@ -34,7 +34,7 @@ export const shareValidators = {
   }),
 
   markOpenedByIdBody: Joi.object({
-    passphase: Joi.string().max(512).required(),
+    passphrase: Joi.string().max(512).required().allow(''),
     openedAt: Joi.date().iso().optional(),
   }),
 

@@ -5,22 +5,22 @@ import { moment, now } from "../../utils/moment.js";
 import {
   decryptSecret,
   encryptSecret,
-  hashPassphase,
-  verifyPassphase,
+  hashPassphrase,
+  verifyPassphrase,
   type EncryptionType,
 } from "../../utils/encryption.js";
 
 export interface CreateShareInput {
   region: MacroRegion;
   secret: string;
-  passphase: string;
+  passphrase: string;
   encryptionType?: EncryptionType;
   ttl: number;
   id?: string;
 }
 
 export interface markOpenedByIdInput {
-  passphase: string;
+  passphrase: string;
   openedAt?: Date;
 }
 
@@ -34,16 +34,14 @@ function toShareStatus(share: ShareEntity) {
     openedAt: share.openedAt,
     expiredAt: share.expiredAt,
     copiedAt: share.copiedAt,
-    isExpired: share.expiredAt ? moment(share.expiredAt).isSameOrBefore(now()) : false,
   };
 }
 
 export class ShareService {
   async create(input: CreateShareInput) {
-    const expiredAt = now().add(input.ttl, "seconds").toDate();
     const encryptionType = input.encryptionType ?? "aes-256-gcm";
 
-    const encrypted = encryptSecret(input.secret, input.passphase, encryptionType);
+    const encrypted = encryptSecret(input.secret, input.passphrase, encryptionType);
 
     const share = ShareEntity.create({
       id: input.id,
@@ -51,9 +49,8 @@ export class ShareService {
       encryptedSecret: encrypted.encryptedSecret,
       encryptionKey: encrypted.encryptionKey,
       encryptionType: encrypted.encryptionType,
-      passphase: hashPassphase(input.passphase),
+      passphrase: input.passphrase ? hashPassphrase(input.passphrase) : "",
       ttl: input.ttl,
-      expiredAt,
     });
 
     const saved = await share.save();
@@ -63,12 +60,7 @@ export class ShareService {
   async getById(id: string) {
     const share = await this.findShareOrThrow(id);
     this.assertNotExpired(share);
-    return share.toPublic();
-  }
-
-  async getStatus(id: string) {
-    const share = await this.findShareOrThrow(id);
-    return toShareStatus(share);
+    return { ...share.toPublic(), needPassphrase: !!share.passphrase };
   }
 
   async markOpenedById(id: string, input: markOpenedByIdInput) {
@@ -79,12 +71,14 @@ export class ShareService {
       throw new AppError(409, "Share has already been opened");
     }
 
-    verifyPassphase(share.passphase, input.passphase);
+    if (share.passphrase) {
+      verifyPassphrase(share.passphrase, input.passphrase);
+    }
 
     const secret = decryptSecret(
       share.encryptedSecret,
       share.encryptionKey,
-      input.passphase,
+      input.passphrase,
       share.encryptionType as EncryptionType,
     );
 
@@ -98,7 +92,9 @@ export class ShareService {
     const share = await this.findShareOrThrow(id);
     this.assertNotExpired(share);
 
-    share.copiedAt = copiedAt ?? now().toDate();
+    if (!share.copiedAt) {
+      share.copiedAt = copiedAt ?? now().toDate();
+    }
     const saved = await share.save();
     return toShareStatus(saved);
   }
@@ -115,9 +111,10 @@ export class ShareService {
 
   private assertNotExpired(share: ShareEntity) {
     if (share.expiredAt && moment(share.expiredAt).isSameOrBefore(now())) {
-      throw new AppError(410, "Share has expired");
+      throw new AppError(410, "This secret has been viewed or expired.");
     }
   }
+
 }
 
 export const shareService = new ShareService();

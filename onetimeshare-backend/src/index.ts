@@ -10,6 +10,7 @@ import { requestLogger } from "./middleware/request-logger.js";
 import { responseMiddleware } from "./middleware/response.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { registerRouters } from "./routers/index.js";
+import cors  from "cors"
 
 async function bootstrap() {
   await AppDataSource.initialize();
@@ -21,6 +22,16 @@ async function bootstrap() {
   });
 
   const app = express();
+
+  app.use(cors({
+    origin: env.nodeEnv === "production"
+      ? env.domain
+      : env.corsOrigin,
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  }));
+
   app.use(express.json());
   app.use(requestLogger);
   app.use(responseMiddleware);
