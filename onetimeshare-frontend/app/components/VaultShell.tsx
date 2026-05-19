@@ -1,3 +1,4 @@
+import { brandName } from "@/lib/utils";
 import Link from "next/link";
 
 export function VaultShell({ children, showFooter = true, showHeader = true }: { children: React.ReactNode, showHeader?: boolean, showFooter?: boolean }) {
@@ -14,16 +15,18 @@ export function VaultShell({ children, showFooter = true, showHeader = true }: {
               <div className="absolute -inset-1 rounded-sm border border-cyan/40 opacity-0 transition-opacity group-hover:opacity-100" />
             </div>
             <span className="font-mono text-lg font-bold uppercase tracking-tighter text-foreground">
-              Onyx Crypt
+              {brandName} Crypt
             </span>
           </Link>
-          <div className="hidden items-center gap-8 font-mono text-[12px] uppercase tracking-[0.25em] text-steel md:flex">
-            <Link href="/" className="transition-colors hover:text-cyan">About</Link>
-            <Link href="/" className="transition-colors hover:text-cyan">Docs</Link>
-          </div>
-          <div className="flex items-center gap-2 border border-hairline px-3 py-1.5 font-mono text-[12px] uppercase tracking-[0.25em] text-steel">
-            <span className="size-1.5 animate-ember rounded-full bg-cyan shadow-[0_0_8px_var(--cyan)]" />
-            Network · Online
+          <div className="flex gap-10">
+            <div className="hidden items-center gap-8 font-mono text-[12px] uppercase tracking-[0.25em] text-steel md:flex">
+              <Link href="/about" className="transition-colors hover:text-cyan">About</Link>
+              {/* <Link href="/" className="transition-colors hover:text-cyan">Docs</Link> */}
+            </div>
+            <div className="flex items-center gap-2 border border-hairline px-3 py-1.5 font-mono text-[12px] uppercase tracking-[0.25em] text-steel">
+              <span className="size-1.5 animate-ember rounded-full bg-cyan shadow-[0_0_8px_var(--cyan)]" />
+              <span className="hidden sm:block">Network · </span>Online
+            </div>
           </div>
         </nav>
       }
@@ -34,13 +37,12 @@ export function VaultShell({ children, showFooter = true, showHeader = true }: {
         <footer className="relative z-10 mt-24 border-t border-hairline bg-vault/40 py-10">
           <div className="mx-auto flex max-w-4xl flex-col items-center justify-between gap-6 px-6 md:flex-row">
             <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-steel">
-              © 2026 Onyx Crypt. All rights reserved
+              © 2026 {brandName}. All rights reserved
             </div>
             <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-steel flex gap-4">
-              <Link href="/" className="transition-colors hover:text-cyan">Privacy</Link>
-              <Link href="/" className="transition-colors hover:text-cyan">Terms</Link>
-              <Link href="/" className="transition-colors hover:text-cyan">Security</Link>
-              <Link href="/" className="transition-colors hover:text-cyan">Feedback</Link>
+              <Link href="/about" className="transition-colors hover:text-cyan">About</Link>
+              <Link href="/privacy" className="transition-colors hover:text-cyan">Privacy</Link>
+              <Link href="/feedback" className="transition-colors hover:text-cyan">Feedback</Link>
             </div>
           </div>
         </footer>

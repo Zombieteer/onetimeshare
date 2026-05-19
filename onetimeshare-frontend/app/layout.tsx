@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { QueryProvider } from "./components/QueryProvider";
+import { brandName } from "./lib/utils";
 
 export const metadata: Metadata = {
-  title: "Onyx Crypt — Privacy-first secret sharing",
+  title: `${brandName} — Privacy-first secret sharing`,
   description:
     "Generate a secure link that destroys its content the instant it's read.",
 };

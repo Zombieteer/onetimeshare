@@ -112,7 +112,7 @@ function ComposerPanel(props: {
             <label className="font-mono text-[10px] uppercase tracking-[0.3em] text-cyan/70">
               Create Secret Link
             </label>
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-steel">
+            <span className="hidden sm:block font-mono text-[10px] uppercase tracking-[0.3em] text-steel">
               · AES-256-GCM ·
             </span>
           </div>
